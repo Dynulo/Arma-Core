@@ -1,0 +1,5 @@
+name = "Commander - Core"
+main_prefix = "dynulo"
+prefix = "core"
+author = "Dynulo"
+template = "cba"
