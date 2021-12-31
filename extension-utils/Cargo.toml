@@ -1,0 +1,12 @@
+[package]
+name = "dynulo_utils"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "dynulo_utils"
+crate-type = ["cdylib"]
+
+[dependencies]
+arma-rs = { git = "https://github.com/synixebrett/arma-rs", branch = "fix_int_type" }
+webbrowser = "0.5"

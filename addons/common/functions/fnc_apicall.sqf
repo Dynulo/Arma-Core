@@ -1,9 +1,8 @@
 #include "script_component.hpp"
 
-params ["_method", "_path", "_body", "_callback"];
+params ["_method", "_path", "_body", ["_callback", {}], ["_args", []]];
 
-private _id = EXT callExtension "uuid";
-
-GVAR(callbacks) set [_id, _callback];
-
-EXT callExtension ["apicall", [_id, _method, _path, _body]];
+GVAR(callbacks) set [
+	EXT callExtension ["api:call", [_method, _path, _body]] select 0,
+	[_callback, _args]
+];

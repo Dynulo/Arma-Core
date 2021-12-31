@@ -1,32 +1,34 @@
-use arma_rs::rv_callback;
+use arma_rs::Context;
 use log::{Level, LevelFilter, Metadata, Record};
 
-use crate::rv_send_callback;
-
-struct ArmaLogger;
+struct ArmaLogger {
+    context: Context,
+}
 
 impl log::Log for ArmaLogger {
     fn enabled(&self, metadata: &Metadata) -> bool {
-        metadata.level() <= Level::Info
+        metadata.level() <= Level::Debug
     }
 
     fn log(&self, record: &Record) {
         if self.enabled(record.metadata()) {
-            rv_callback!(
+            self.context.callback(
                 "dynulo_log",
-                "core",
-                format!("{}", record.level()).to_uppercase(),
-                format!("{}", record.args())
+                record.target(),
+                Some(vec![
+                    format!("{}", record.level()).to_uppercase(),
+                    format!("{}", record.args()),
+                ]),
             );
         }
     }
 
     fn flush(&self) {}
 }
-static LOGGER: ArmaLogger = ArmaLogger;
 
-pub fn init() {
-    if let Err(e) = log::set_logger(&LOGGER).map(|()| log::set_max_level(LevelFilter::Info)) {
+pub fn init(context: Context) {
+    let logger = Box::leak(Box::new(ArmaLogger { context }));
+    if let Err(e) = log::set_logger(logger).map(|()| log::set_max_level(LevelFilter::Info)) {
         error!("failed to initialize logger: {}", e);
     }
 }

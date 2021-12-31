@@ -6,8 +6,10 @@ class CfgPatches {
         units[] = {};
         weapons[] = {};
         requiredVersion = REQUIRED_VERSION;
-        requiredAddons[] = {"cba_main"};
+        requiredAddons[] = {"core_discord"};
         author = "AUTHOR";
         VERSION_CONFIG;
     };
 };
+
+#include "CfgEventHandlers.hpp"
