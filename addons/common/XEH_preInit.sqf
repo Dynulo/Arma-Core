@@ -37,8 +37,3 @@ if (isServer && {isMultiplayer}) then {
 		};
 	}];
 };
-
-// Unknown why this bug is occuring, not sure if on arma-rs or arma side
-
-EXT callExtension ["nop", []];
-"dynulo_utils" callExtension ["nop", []];

@@ -8,5 +8,5 @@ name = "dynulo_utils"
 crate-type = ["cdylib"]
 
 [dependencies]
-arma-rs = { git = "https://github.com/synixebrett/arma-rs", branch = "fix_int_type" }
+arma-rs = "1.3"
 webbrowser = "0.5"
