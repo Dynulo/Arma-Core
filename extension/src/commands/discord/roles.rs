@@ -1,4 +1,4 @@
-use arma_rs::{ArmaValue, Group, IntoArma, Context};
+use arma_rs::{Value, Group, IntoArma, Context};
 use serde::Deserialize;
 
 use crate::{
@@ -20,7 +20,7 @@ pub struct Role {
 }
 
 impl IntoArma for Role {
-    fn to_arma(&self) -> ArmaValue {
+    fn to_arma(&self) -> Value {
         vec![
             self.id.to_string(),
             self.name.to_string(),

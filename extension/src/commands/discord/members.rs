@@ -1,4 +1,4 @@
-use arma_rs::{ArmaValue, Group, IntoArma, Context};
+use arma_rs::{Value, Group, IntoArma, Context};
 use serde::Deserialize;
 
 use crate::{
@@ -21,7 +21,7 @@ pub struct Member {
 }
 
 impl IntoArma for Member {
-    fn to_arma(&self) -> ArmaValue {
+    fn to_arma(&self) -> Value {
         vec![
             self.nickname.to_arma(),
             self.discord.to_arma(),
