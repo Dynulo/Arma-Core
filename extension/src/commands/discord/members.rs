@@ -1,4 +1,4 @@
-use arma_rs::{Value, Group, IntoArma, Context};
+use arma_rs::{Context, Group, IntoArma, Value};
 use serde::Deserialize;
 
 use crate::{

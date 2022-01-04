@@ -6,9 +6,6 @@ ADDON = true;
 [QEGVAR(common,serverLoaded), FUNC(handleServerLoaded)] call CBA_fnc_addEventHandler;
 
 if (isServer) then {
-	[QGVAR(roles)] call EFUNC(common,component_register);
-	[QGVAR(members)] call EFUNC(common,component_register);
-
 	[QEGVAR(common,serverReady), FUNC(handleServerReady)] call CBA_fnc_addEventHandler;
 
 	[QGVAR(generateLink), {
@@ -31,15 +28,17 @@ if (isServer) then {
 				private _cmd = _data select 0;
 				switch (_cmd) do {
 					case "clear": {
-						GVAR(rolesImporting) = [];
+						GVAR(rolesImporting) = createHashMap;
 					};
 					case "entry": {
-						GVAR(rolesImporting) pushBack (_data select 1);
+						private _role = _data select 1;
+						private _id = _role deleteAt 0;
+						GVAR(rolesImporting) set [_id, _role];
 					};
 					case "done": {
 						GVAR(roles) = +GVAR(rolesImporting);
 						publicVariable QGVAR(roles);
-						[QGVAR(roles)] call EFUNC(common,component_ready);
+						[QEGVAR(common,component_ready), QGVAR(roles)] call CBA_fnc_serverEvent;
 					};
 				};
 			};
@@ -48,25 +47,21 @@ if (isServer) then {
 				private _cmd = _data select 0;
 				switch (_cmd) do {
 					case "clear": {
-						GVAR(membersImporting) = [];
+						GVAR(membersImporting) = createHashMap;
 					};
 					case "entry": {
-						GVAR(membersImporting) pushBack (_data select 1);
+						private _member = _data select 1;
+						private _id = _member select 1;
+						GVAR(membersImporting) set [_id, _member];
 					};
 					case "done": {
 						GVAR(members) = +GVAR(membersImporting);
 						publicVariable QGVAR(members);
-						[QGVAR(members)] call EFUNC(common,component_ready);
+						[QEGVAR(common,component_ready), QGVAR(members)] call CBA_fnc_serverEvent;
 					};
 				};
 			};
-			case "features:fetch": {
-				private _data = parseSimpleArray _data;
-				INFO_1("Features: %1", _data);
-				{
-					[QGVAR(feature), _x] call CBA_fnc_globalEvent;
-				} forEach _data;
-			};
+			
 		};
 	}];
 

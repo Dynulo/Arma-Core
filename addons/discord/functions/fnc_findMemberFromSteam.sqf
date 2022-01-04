@@ -2,7 +2,7 @@
 
 params ["_steam"];
 
-private _index = GVAR(members) findIf {
+private _index = (values GVAR(members)) findIf {
 	_x params ["", "", "", "", "_s"];
 	_s isEqualTo _steam
 };
@@ -10,5 +10,5 @@ private _index = GVAR(members) findIf {
 if (_index == -1) then {
 	[]
 } else {
-	GVAR(members) select _index
+	GVAR(members) getOrDefault [((keys GVAR(members)) select _index), ["","","","",""]]
 }

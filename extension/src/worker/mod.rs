@@ -8,13 +8,19 @@ pub fn init() -> Worker<Task> {
 
 pub fn start() -> Worker<Task> {
     let queue = init();
-    let stealer = queue.stealer();
-    std::thread::spawn(move || loop {
-        if let Steal::Success(task) = stealer.steal() {
-            if let Err(e) = task.execute() {
-                error!("Error in task {}: {}", task.id(), e);
+    for _ in 0..(std::env::var("DYNULO_THREADS")
+        .unwrap_or_else(|_| "4".to_string())
+        .parse::<i32>()
+        .unwrap_or(4))
+    {
+        let stealer = queue.stealer();
+        std::thread::spawn(move || loop {
+            if let Steal::Success(task) = stealer.steal() {
+                if let Err(e) = task.execute() {
+                    error!("Error in task {}: {}", task.id(), e);
+                }
             }
-        }
-    });
+        });
+    }
     queue
 }

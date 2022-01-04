@@ -1,4 +1,4 @@
-use arma_rs::{Group, Context};
+use arma_rs::{Context, Group};
 
 use crate::{
     commands::core::{GUILD, HOST, TOKEN},

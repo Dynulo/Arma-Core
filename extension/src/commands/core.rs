@@ -4,12 +4,10 @@ use std::{
     sync::RwLock,
 };
 
-use arma_rs::{Group, Context};
+use arma_rs::{Context, Group};
 use jsonwebtoken::dangerous_insecure_decode;
 
-use crate::{
-    token::{TokenClaims, TokenClaimsData},
-};
+use crate::token::{TokenClaims, TokenClaimsData};
 
 pub fn group() -> Group {
     Group::new()
@@ -25,8 +23,8 @@ pub fn group() -> Group {
 const TOKEN_FILE: &str = "dynulo_token.txt";
 
 lazy_static::lazy_static! {
-    pub static ref HOST: String = std::env::var("DYNULO_HOST")
-        .unwrap_or_else(|_| "https://app.dynulo.com/api/v1".to_string());
+    pub static ref HOST: String = format!("{}/api/v1", std::env::var("DYNULO_HOST")
+        .unwrap_or_else(|_| "https://dev.dynulo.com".to_string()));
     pub static ref TOKEN: RwLock<String> = RwLock::new(String::new());
     pub static ref GUILD: RwLock<String> = RwLock::new(String::new());
     static ref READY: RwLock<bool> = RwLock::new(false);
@@ -40,7 +38,11 @@ fn token_register(ctx: Context, token: String) -> bool {
         info!("token saved to file");
         if !*READY.read().unwrap() {
             *READY.write().unwrap() = true;
-            ctx.callback("dynulo_core", "core:ready", Some(GUILD.read().unwrap().clone()));
+            ctx.callback(
+                "dynulo_core",
+                "core:ready",
+                Some(GUILD.read().unwrap().clone()),
+            );
         }
         true
     } else {
@@ -55,7 +57,11 @@ fn token_exists() -> bool {
 fn ready(ctx: Context) {
     if token_exists() {
         *READY.write().unwrap() = true;
-        ctx.callback("dynulo_core", "core:ready", Some(GUILD.read().unwrap().clone()));
+        ctx.callback(
+            "dynulo_core",
+            "core:ready",
+            Some(GUILD.read().unwrap().clone()),
+        );
     }
 }
 

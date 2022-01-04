@@ -2,19 +2,11 @@
 
 params ["_name"];
 
+if (GVAR(loaded)) exitWith {
+	WARNING_1("attempting to ready %1 after loaded event", _name);
+};
+
 GVAR(components) set [_name, true];
 INFO_1("Component %1 ready", _name);
 
-scopeName "all_true";
-private _all_true = true;
-{
-	if !(_y) exitWith {
-		_all_true = false;
-		breakTo "all_true";
-	};
-} forEach GVAR(components);
-
-if (_all_true) then {
-	INFO("All components loaded");
-	[QGVAR(serverLoaded)] call CBA_fnc_serverEvent;
-};
+call FUNC(component_check_ready);

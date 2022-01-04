@@ -1,3 +1,5 @@
+PREP(apicall);
+PREP(component_check_ready);
 PREP(component_ready);
 PREP(component_register);
-PREP(apicall);
+PREP(component_revoke);

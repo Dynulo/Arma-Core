@@ -25,6 +25,7 @@ fn init() -> Extension {
         .group("core", commands::core::group())
         .group("discord", commands::discord::group())
         .group("api", commands::api::group())
+        .group("features", commands::features::group())
         .finish();
     logger::init(ext.context());
     ext
