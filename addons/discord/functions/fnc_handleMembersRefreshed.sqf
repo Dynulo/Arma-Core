@@ -1,5 +1,7 @@
 #include "script_component.hpp"
 
+if (player getVariable [QGVAR(welcomed), false]) exitWith {};
+
 private _myDiscord = [getPlayerUID player] call FUNC(findMemberFromSteam);
 if (_myDiscord isEqualTo []) then {
 	systemChat "Your account is not linked, launching website";
@@ -19,4 +21,6 @@ if (_myDiscord isEqualTo []) then {
 		"My Account",
 		format ["Name: %1<br/>Discord ID: %2<br/>Steam ID: %3<br/><br/>Roles:<br/>%4", _myDiscord#0, _myDiscord#1, _myDiscord#4, _roles]
 	]];
+
+	player setVariable [QGVAR(welcomed), true];
 };

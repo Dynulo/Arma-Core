@@ -1,8 +1,11 @@
 use arma_rs::{Context, Group, IntoArma};
 use reqwest::StatusCode;
 
-use super::super::HOST;
-use crate::{commands::core::TOKEN, worker::fn_task, QUEUE};
+use crate::{
+    commands::core::{GUILD, HOST, TOKEN},
+    worker::fn_task,
+    QUEUE,
+};
 
 pub fn group() -> Group {
     Group::new().command("fetch", fetch)
@@ -13,7 +16,12 @@ fn fetch(ctx: Context, discord: String, steam: String) -> String {
         let task = fn_task(move |id| {
             let steam = steam.clone();
             let client = reqwest::blocking::Client::new();
-            let path = format!("{}/player/{}/bank/balance", *HOST, discord);
+            let path = format!(
+                "{}/guild/{}/features/persistent_gear/player/{}/bank/balance",
+                *HOST,
+                *GUILD.read().unwrap(),
+                discord
+            );
             info!("[{}] fetching balance from {}", id, path);
             if let Ok(response) = client
                 .get(path)

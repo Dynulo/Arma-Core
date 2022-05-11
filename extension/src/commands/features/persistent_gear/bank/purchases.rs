@@ -1,8 +1,11 @@
 use arma_rs::{Context, Group};
 use serde::Serialize;
 
-use super::super::HOST;
-use crate::{commands::core::TOKEN, worker::fn_task, QUEUE};
+use crate::{
+    commands::core::{GUILD, HOST, TOKEN},
+    worker::fn_task,
+    QUEUE,
+};
 
 pub fn group() -> Group {
     Group::new().command("create", create)
@@ -14,8 +17,6 @@ pub struct NewPurchase {
     pub class: String,
     #[serde(rename = "q")]
     pub quantity: i32,
-    #[serde(rename = "c")]
-    pub cost: i32,
     #[serde(rename = "g")]
     pub global: bool,
 }
@@ -29,7 +30,12 @@ fn create(
     if let Ok(q) = QUEUE.lock() {
         let task = fn_task(move |id| {
             let client = reqwest::blocking::Client::new();
-            let path = format!("{}/player/{}/bank/purchases", *HOST, discord);
+            let path = format!(
+                "{}/guild/{}/features/persistent_gear/player/{}/bank/purchases",
+                *HOST,
+                *GUILD.read().unwrap(),
+                discord
+            );
             info!("[{}] Creating purchase at {}", id, path);
             if let Ok(response) = client
                 .post(path)
@@ -42,7 +48,6 @@ fn create(
                         .map(|p| NewPurchase {
                             class: p.0,
                             quantity: p.2,
-                            cost: p.1,
                             global: p.4,
                         })
                         .collect::<Vec<NewPurchase>>(),

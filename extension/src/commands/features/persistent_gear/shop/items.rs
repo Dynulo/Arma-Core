@@ -1,8 +1,11 @@
 use arma_rs::{Context, Group, IntoArma, Value};
 use serde::Deserialize;
 
-use super::super::HOST;
-use crate::{commands::core::TOKEN, worker::fn_task, QUEUE};
+use crate::{
+    commands::core::{GUILD, HOST, TOKEN},
+    worker::fn_task,
+    QUEUE,
+};
 
 pub fn group() -> Group {
     Group::new().command("fetch", fetch)
@@ -31,7 +34,7 @@ impl IntoArma for Item {
             // self.pretty.to_arma(),
             self.cost.to_arma(),
             {
-                let roles = self.roles.clone().unwrap_or_else(String::new);
+                let roles = self.roles.clone().unwrap_or_default();
                 if roles.is_empty() {
                     Value::Array(vec![])
                 } else {
@@ -53,7 +56,11 @@ fn fetch(ctx: Context) -> String {
     if let Ok(q) = QUEUE.lock() {
         let task = fn_task(move |id| {
             let client = reqwest::blocking::Client::new();
-            let path = format!("{}/items", *HOST);
+            let path = format!(
+                "{}/guild/{}/features/persistent_gear/shop/items",
+                *HOST,
+                *GUILD.read().unwrap(),
+            );
             info!("[{}] fetching items from {}", id, path);
             if let Ok(response) = client
                 .get(path)

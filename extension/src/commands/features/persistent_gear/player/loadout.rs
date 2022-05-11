@@ -1,8 +1,11 @@
 use arma_rs::{Context, Group};
 use reqwest::StatusCode;
 
-use super::super::HOST;
-use crate::{commands::core::TOKEN, worker::fn_task, QUEUE};
+use crate::{
+    commands::core::{GUILD, HOST, TOKEN},
+    worker::fn_task,
+    QUEUE,
+};
 
 pub fn group() -> Group {
     Group::new().command("fetch", fetch).command("store", store)
@@ -13,7 +16,12 @@ fn fetch(ctx: Context, discord: String, steam: String) -> String {
         let task = fn_task(move |id| {
             let steam = steam.clone();
             let client = reqwest::blocking::Client::new();
-            let path = format!("{}/player/{}/loadout", *HOST, discord);
+            let path = format!(
+                "{}/guild/{}/features/persistent_gear/player/{}/loadout",
+                *HOST,
+                *GUILD.read().unwrap(),
+                discord
+            );
             info!("[{}] fetching loadout from {}", id, path);
             if let Ok(response) = client
                 .get(path)
@@ -40,14 +48,7 @@ fn fetch(ctx: Context, discord: String, steam: String) -> String {
                             );
                         }
                     },
-                    StatusCode::NO_CONTENT => {
-                        info!("[{}] no loadout", id);
-                        ctx.callback(
-                            "dynulo_core",
-                            "features:persistent-gear:player:loadout:fetch",
-                            Some(vec!["empty".to_string(), steam]),
-                        );
-                    }
+                    StatusCode::NO_CONTENT => {}
                     s => {
                         error!("[{}] failed to fetch loadout: {}", id, s);
                         ctx.callback(
@@ -73,7 +74,12 @@ fn store(ctx: Context, discord: String, steam: String, loadout: String) -> Strin
     if let Ok(q) = QUEUE.lock() {
         let task = fn_task(move |id| {
             let client = reqwest::blocking::Client::new();
-            let path = format!("{}/player/{}/loadout", *HOST, discord);
+            let path = format!(
+                "{}/guild/{}/features/persistent_gear/player/{}/loadout",
+                *HOST,
+                *GUILD.read().unwrap(),
+                discord
+            );
             info!("[{}] Storing loadout to {}", id, path);
             if let Ok(response) = client
                 .put(path)

@@ -8,8 +8,7 @@ name = "dynulo_core"
 crate-type = ["cdylib"]
 
 [dependencies]
-# arma-rs = "1.3"
-arma-rs = { git = "https://github.com/brettmayson/arma-rs" }
+arma-rs = "1.7"
 chrono = { version = "0.4", features = ["serde"] }
 crossbeam-deque = "0.8"
 jsonwebtoken = "7.2" 

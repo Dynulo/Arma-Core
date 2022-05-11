@@ -13,6 +13,6 @@ private _all_true = true;
 
 if (_all_true) then {
 	INFO("All components loaded");
-	[QGVAR(serverLoaded)] call CBA_fnc_globalEvent;
+	[QGVAR(serverLoaded)] call CBA_fnc_globalEventJIP;
 	GVAR(loaded) = true;
 };

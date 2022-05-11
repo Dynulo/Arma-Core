@@ -1,8 +1,11 @@
 use arma_rs::{Context, Group, IntoArma, Value};
 use serde::{Deserialize, Serialize};
 
-use super::super::HOST;
-use crate::{commands::core::TOKEN, worker::fn_task, QUEUE};
+use crate::{
+    commands::core::{GUILD, HOST, TOKEN},
+    worker::fn_task,
+    QUEUE,
+};
 
 pub fn group() -> Group {
     Group::new()
@@ -30,7 +33,12 @@ fn fetch(ctx: Context, discord: String, steam: String) -> String {
         let task = fn_task(move |id| {
             let steam = steam.clone();
             let client = reqwest::blocking::Client::new();
-            let path = format!("{}/player/{}/locker", *HOST, discord);
+            let path = format!(
+                "{}/guild/{}/features/persistent_gear/player/{}/locker",
+                *HOST,
+                *GUILD.read().unwrap(),
+                discord
+            );
             info!("[{}] fetching locker from {}", id, path);
             if let Ok(response) = client
                 .get(path)
@@ -88,7 +96,12 @@ fn store(ctx: Context, discord: String, steam: String, items: Vec<(String, i32)>
     if let Ok(q) = QUEUE.lock() {
         let task = fn_task(move |id| {
             let client = reqwest::blocking::Client::new();
-            let path = format!("{}/player/{}/locker/store", *HOST, discord);
+            let path = format!(
+                "{}/guild/{}/features/persistent_gear/player/{}/locker/store",
+                *HOST,
+                *GUILD.read().unwrap(),
+                discord
+            );
             info!("[{}] Storing locker to {}", id, path);
             if let Ok(response) = client
                 .put(path)
@@ -134,7 +147,12 @@ fn take(ctx: Context, discord: String, steam: String, items: Vec<(String, i32)>)
     if let Ok(q) = QUEUE.lock() {
         let task = fn_task(move |id| {
             let client = reqwest::blocking::Client::new();
-            let path = format!("{}/player/{}/locker/take", *HOST, discord);
+            let path = format!(
+                "{}/guild/{}/features/persistent_gear/player/{}/locker/take",
+                *HOST,
+                *GUILD.read().unwrap(),
+                discord
+            );
             info!("[{}] Taking locker from {}", id, path);
             if let Ok(response) = client
                 .put(path)

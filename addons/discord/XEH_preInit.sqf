@@ -38,7 +38,7 @@ if (isServer) then {
 					case "done": {
 						GVAR(roles) = +GVAR(rolesImporting);
 						publicVariable QGVAR(roles);
-						[QEGVAR(common,component_ready), QGVAR(roles)] call CBA_fnc_globalEvent;
+						[QEGVAR(common,component_ready), QGVAR(roles)] call CBA_fnc_globalEventJIP;
 					};
 				};
 			};
@@ -57,7 +57,7 @@ if (isServer) then {
 					case "done": {
 						GVAR(members) = +GVAR(membersImporting);
 						publicVariable QGVAR(members);
-						[QEGVAR(common,component_ready), QGVAR(members)] call CBA_fnc_globalEvent;
+						[QEGVAR(common,component_ready), QGVAR(members)] call CBA_fnc_globalEventJIP;
 					};
 				};
 			};

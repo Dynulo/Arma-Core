@@ -1,5 +1,6 @@
 use arma_rs::{Context, Group};
 
+// mod courses;
 pub mod persistent_gear;
 
 use crate::{
@@ -12,6 +13,7 @@ pub fn group() -> Group {
     Group::new()
         .command("fetch", fetch)
         .group("persistent-gear", persistent_gear::group())
+    // .group("courses", courses::group())
 }
 
 fn fetch(ctx: Context) -> String {
